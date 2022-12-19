@@ -50,9 +50,7 @@ export default {
           media[i].cast = res[0].data.cast.splice(0, 5);
           media[i].genres = res[1].data.genres.splice(0, 5);
 
-        })).then(() => {
-          console.log(media);
-        })
+        }))
       }
     },
 
@@ -76,9 +74,16 @@ export default {
         languageString = 'gb';
       }
 
-      return `https://flagsapi.com/${languageString.toUpperCase()}/flat/64.png`
-    }
+      return `https://flagsapi.com/${languageString.toUpperCase()}/flat/16.png`
+    },
 
+    imgMissing() {
+      return 'https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
+    },
+
+    starsScore(element) {
+      return Math.ceil((element.vote_average / 10) * 5);
+    }
   }
 }
 </script>
@@ -88,10 +93,12 @@ export default {
 
   <button @click="searchContent()">Cerca</button>
 
-  <ul v-for="content in store.searchResult">
+  <ul v-for="(content, index) in store.searchResult" :key="index">
     {{ content.hasOwnProperty('title') ? 'MOVIE' : 'TV SHOW' }}
 
-    <img :src="store.apiPosterURL + store.posterWidth + content.poster_path" alt="img">
+    <img
+      :src="content.poster_path === null ? this.imgMissing() : store.apiPosterURL + store.posterWidth + content.poster_path"
+      alt="artwork">
 
     <li>{{ content.hasOwnProperty('title') ? content.title : content.name }}</li>
 
@@ -102,7 +109,23 @@ export default {
         alt="languageflag">
     </li>
 
-    <li>{{ content.vote_average }}</li>
+    <li>
+      <div v-if="this.starsScore(content) > 0">
+
+        <span v-for="n in this.starsScore(content)">
+          <font-awesome-icon icon="fa-solid fa-star" />
+        </span>
+
+        <span v-for="n in (5 - this.starsScore(content))">
+          <font-awesome-icon icon="fa-regular fa-star" />
+        </span>
+
+      </div>
+
+      <div v-else>
+        No Ratings
+      </div>
+    </li>
 
     <ul>
       <li v-for="actor in content.cast">
@@ -119,5 +142,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
+img {
+  max-width: 342px;
+}
 </style>
