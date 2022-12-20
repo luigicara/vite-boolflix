@@ -17,24 +17,31 @@ export default {
       // reset selection of genres
       store.genresSelect = ['Vedi Tutti'];
 
-      // create api search URL
-      let movie = this.urlGen('search', 'movie');
+      store.genresString = 'Vedi Tutti';
 
-      let tv = this.urlGen('search', 'tv');
+      if (store.searchString === "") {
+        this.trendingContents()
+      } else {
 
-      // get method of axios on url
-      const requestMovie = axios.get(movie);
-      const requestTv = axios.get(tv);
+        // create api search URL
+        let movie = this.urlGen('search', 'movie');
 
-      // concat of both request in a single array
-      axios.all([requestMovie, requestTv]).then(axios.spread((...res) => {
-        store.searchResult = res[0].data.results.concat(res[1].data.results)
+        let tv = this.urlGen('search', 'tv');
 
-      })).catch(errors => {
-        console.log(errors);
-      }).then(() => {
-        this.getCastAndGenres();
-      })
+        // get method of axios on url
+        const requestMovie = axios.get(movie);
+        const requestTv = axios.get(tv);
+
+        // concat of both request in a single array
+        axios.all([requestMovie, requestTv]).then(axios.spread((...res) => {
+          store.searchResult = res[0].data.results.concat(res[1].data.results)
+
+        })).catch(errors => {
+          console.log(errors);
+        }).then(() => {
+          this.getCastAndGenres();
+        })
+      }
     },
 
     getCastAndGenres() {
@@ -84,6 +91,10 @@ export default {
 
         return `${store.apiURL}search/${category}/?${store.apiKey}${store.apiLanguage}&query=${store.searchString}`
 
+      } else if (type === 'homepage') {
+
+        return `${store.apiURL}${category}/all/week?${store.apiKey}${store.apiLanguage}`
+
       } else {
 
         return `${store.apiURL}${category}/${id}${castOrGenres}?${store.apiKey}${store.apiLanguage}`
@@ -112,6 +123,15 @@ export default {
       return Math.ceil((element.vote_average / 10) * 5);
     },
 
+    trendingContents() {
+      axios.get(this.urlGen('homepage', 'trending'))
+        .then(res => {
+          store.searchResult = res.data.results;
+        })
+        .then(() => {
+          this.getCastAndGenres();
+        })
+    }
   },
 
   computed: {
@@ -136,6 +156,10 @@ export default {
       }
 
     }
+  },
+
+  mounted() {
+    this.searchContent();
   }
 }
 </script>
