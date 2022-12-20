@@ -1,8 +1,12 @@
 <script>
 import { store } from './store.js';
 import axios from 'axios';
+import AppHeader from './components/AppHeader.vue';
 
 export default {
+  components: {
+    AppHeader
+  },
   data() {
     return {
       store,
@@ -137,15 +141,17 @@ export default {
 </script>
 
 <template>
-  <input type="text" v-model="store.searchString">
+  <AppHeader @search="searchContent()" />
+
+  <!-- <input type="text" v-model="store.searchString">
 
   <button @click="searchContent()">Cerca</button>
 
-  <select name="genres" id="genres" v-model="store.genresString">
+  <select name="genres" id="genres" v-if="store.genresSelect.length > 0" v-model="store.genresString">
     <option v-for="genre in store.genresSelect" :value="genre">
       {{ genre }}
     </option>
-  </select>
+  </select> -->
 
   <ul v-for="(content, index) in store.resultFilter" :key="index">
     {{ content.hasOwnProperty('title') ? 'MOVIE' : 'TV SHOW' }}
