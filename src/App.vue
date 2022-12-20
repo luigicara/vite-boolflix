@@ -2,10 +2,12 @@
 import { store } from './store.js';
 import axios from 'axios';
 import AppHeader from './components/AppHeader.vue';
+import CardContent from './components/CardContent.vue';
 
 export default {
   components: {
-    AppHeader
+    AppHeader,
+    CardContent
   },
   data() {
     return {
@@ -102,26 +104,26 @@ export default {
 
     },
 
-    countryFlagURL(language) {
-      // api for Flags
-      let languageString = language;
+    // countryFlagURL(language) {
+    //   // api for Flags
+    //   let languageString = language;
 
-      if (language === 'en') {
-        languageString = 'gb';
-      }
+    //   if (language === 'en') {
+    //     languageString = 'gb';
+    //   }
 
-      return `https://flagsapi.com/${languageString.toUpperCase()}/flat/16.png`
-    },
+    //   return `https://flagsapi.com/${languageString.toUpperCase()}/flat/16.png`
+    // },
 
-    imgMissing() {
-      // if there's no artwork
-      return 'https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
-    },
+    // imgMissing() {
+    //   // if there's no artwork
+    //   return 'https://static.vecteezy.com/system/resources/previews/004/141/669/original/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
+    // },
 
-    starsScore(element) {
-      // rounding the rating in scale 0 to 5
-      return Math.ceil((element.vote_average / 10) * 5);
-    },
+    // starsScore(element) {
+    //   // rounding the rating in scale 0 to 5
+    //   return Math.ceil((element.vote_average / 10) * 5);
+    // },
 
     trendingContents() {
       axios.get(this.urlGen('homepage', 'trending'))
@@ -154,7 +156,6 @@ export default {
 
         })
       }
-
     }
   },
 
@@ -177,7 +178,10 @@ export default {
     </option>
   </select> -->
 
-  <ul v-for="(content, index) in store.resultFilter" :key="index">
+  <main>
+    <CardContent v-for="(content, index) in store.resultFilter" :key="index" :content="content" />
+  </main>
+  <!-- <ul v-for="(content, index) in store.resultFilter" :key="index">
     {{ content.hasOwnProperty('title') ? 'MOVIE' : 'TV SHOW' }}
 
     <img
@@ -228,11 +232,17 @@ export default {
         {{ genre.name }}
       </li>
     </ul>
-  </ul>
+  </ul> -->
 </template>
 
 <style lang="scss" scoped>
-img {
-  max-width: 342px;
+main {
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  background-color: grey;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 3rem;
 }
 </style>
