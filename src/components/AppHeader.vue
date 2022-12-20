@@ -6,13 +6,19 @@ export default {
         return {
             store,
         }
+    },
+
+    methods: {
+        resetValue() {
+            store.searchString = "";
+        }
     }
 }
 </script>
 
 <template>
     <header>
-        <h1>Boolflix</h1>
+        <h1 @click="resetValue(); $emit('search')">Boolflix</h1>
 
         <div>
             <select name="genres" id="genres" v-if="store.genresSelect.length > 0" v-model="store.genresString">
@@ -40,6 +46,7 @@ header {
         margin: 1rem;
         font-size: 4rem;
         color: red;
+        cursor: pointer;
     }
 
     div {
